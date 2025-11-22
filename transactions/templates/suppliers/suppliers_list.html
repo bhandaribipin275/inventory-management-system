@@ -11,7 +11,13 @@
     <div class="row" style="color: #ea2088; font-style: bold; font-size: 3rem;">
         <div class="col-md-8">Suppliers List</div>
         <div class="col-md-4">               
-            <div style="float:right;"> <a class="btn ghost-blue" href="{% url 'new-supplier' %}">Add New Supplier</a> </div>
+            <div style="float:right;">
+                <!-- Added search input -->
+                <div style="display:inline-block; margin-right:8px;">
+                    <input id="supplier-search" type="search" class="form-control" placeholder="Search suppliers (name / phone / GSTIN)" aria-label="Search suppliers" style="width:320px;">
+                </div>
+                <a class="btn ghost-blue" href="{% url 'new-supplier' %}">Add New Supplier</a>
+            </div>
         </div>
     </div>
 
@@ -30,9 +36,9 @@
 
 {% if object_list %}
 
-        <tbody>
+        <tbody id="suppliers-tbody">
             {% for supplier in object_list %}
-            <tr>
+            <tr class="supplier-row">
                 <td>
                     <h3> <a href="{% url 'supplier' supplier.name %}">{{ supplier.name }}</a> </h3>
                 </td>
@@ -46,6 +52,11 @@
                 </td>              
             </tr>
             {% endfor %}
+
+            <!-- No-results row, shown when client-side filter finds nothing -->
+            <tr id="no-results" style="display:none">
+                <td colspan="4" style="text-align:center; color:#777; padding:20px;">No suppliers match your search.</td>
+            </tr>
         </tbody>
 
     </table>
@@ -84,5 +95,38 @@
 
 {% endif %}
 
+
+<!-- Client-side filtering script -->
+<script>
+(function(){
+    const input = document.getElementById('supplier-search');
+    if (!input) return;
+
+    const tbody = document.getElementById('suppliers-tbody');
+    const rows = tbody ? Array.from(tbody.querySelectorAll('tr.supplier-row')) : [];
+    const noResults = document.getElementById('no-results');
+
+    function normalize(s){ return (s||'').toString().trim().toLowerCase(); }
+
+    function filterRows() {
+        const q = normalize(input.value);
+        let visibleCount = 0;
+        rows.forEach(row => {
+            const cols = row.querySelectorAll('td');
+            const name = normalize(cols[0] ? cols[0].innerText : '');
+            const phone = normalize(cols[1] ? cols[1].innerText : '');
+            const gst = normalize(cols[2] ? cols[2].innerText : '');
+            const match = q === '' || name.includes(q) || phone.includes(q) || gst.includes(q);
+            row.style.display = match ? '' : 'none';
+            if (match) visibleCount++;
+        });
+        if (noResults) noResults.style.display = visibleCount === 0 ? '' : 'none';
+    }
+
+    input.addEventListener('input', filterRows);
+    // optional: run once to respect initial value if any
+    filterRows();
+})();
+</script>
 
 {% endblock content %}
