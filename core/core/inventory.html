@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}
+
+{% block title %}Inventory List{% endblock %}
+
+{% block content %}
+<h1>Inventory List</h1>
+
+<form method="GET">
+    <input type="text" name="q" placeholder="Search..." value="{{ q }}">
+    <button type="submit">Search</button>
+</form>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for item in stocks %}
+    <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>
+            <a href="{% url 'edit_stock' item.id %}">Edit</a> |
+            <a href="{% url 'delete_stock' item.id %}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
