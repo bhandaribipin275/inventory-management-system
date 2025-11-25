@@ -1,0 +1,6 @@
+.card { background:#fff; padding:12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,.06); }
+.low-card { border-left:4px solid #e74c3c; }
+.low-item { color:#c0392b; font-weight:600; }
+.low-row { background:#fff6f6; }
+.items-table { width:100%; border-collapse:collapse; }
+.items-table td, .items-table th { padding:8px; border-bottom:1px solid #eee; }

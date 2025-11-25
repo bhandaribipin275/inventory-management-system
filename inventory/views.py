@@ -7,6 +7,8 @@ from django.db.models import Q
 
 from .models import Stock
 from .forms import StockForm
+from django.shortcuts import render
+from .models import Item
 
 
 # ============================
@@ -78,3 +80,18 @@ class StockDeleteView(DeleteView):
         stock.save()
         messages.success(request, "Stock deleted successfully.")
         return super().delete(request, *args, **kwargs)
+    
+
+
+def dashboard(request):
+    low_threshold = 5  # changeable constant
+    items = Item.objects.all()
+    low_stock_items = [i for i in items if i.is_low_stock(low_threshold)]
+    total_value = sum(i.total_value() for i in items)
+    context = {
+        'items': items,
+        'low_stock_items': low_stock_items,
+        'low_threshold': low_threshold,
+        'total_value': total_value,
+    }
+    return render(request, 'dashboard.html', context)

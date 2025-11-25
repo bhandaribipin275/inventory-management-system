@@ -1,0 +1,33 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/site.css' %}">
+
+<div class="cards">
+  <div class="card">
+    <h4>Total inventory value</h4>
+    <div class="metric">₹{{ total_value }}</div>
+  </div>
+
+  <div class="card low-card">
+    <h4>Low stock (≤ {{ low_threshold }})</h4>
+    <ul>
+      {% for it in low_stock_items %}
+        <li class="low-item">{{ it.name }} — {{ it.quantity }}</li>
+      {% empty %}
+        <li>All items above threshold</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<table class="items-table">
+  <thead><tr><th>Name</th><th>Qty</th><th>Price</th></tr></thead>
+  <tbody>
+    {% for it in items %}
+      <tr class="{% if it.is_low_stock low_threshold %}low-row{% endif %}">
+        <td>{{ it.name }}</td>
+        <td>{{ it.quantity }}</td>
+        <td>{{ it.price }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
