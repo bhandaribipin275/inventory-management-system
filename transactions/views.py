@@ -144,20 +144,21 @@ class PurchaseCreateView(View):
         if formset.is_valid():
             # saves bill
             try:
-                billobj = form.save(commit=False)
+                # create and save a PurchaseBill linked to the selected supplier
+                billobj = PurchaseBill(supplier=supplierobj)
                 billobj.save()
 
             except Exception as exc:
                 print('Exception error! ',exc)
                 context = {
-                    'form'      : form,
                     'formset'   : formset,
+                    'supplier'  : supplierobj,
                 }
                 return render(request, self.template_name, context)
             
             try:
                 # create bill details object
-                billdetailsobj = SaleBillDetails(billno=billobj)
+                billdetailsobj = PurchaseBillDetails(billno=billobj)
                 billdetailsobj.save()
 
             except Exception as exc:
