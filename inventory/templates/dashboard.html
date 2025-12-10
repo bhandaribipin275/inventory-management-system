@@ -1,0 +1,58 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Inventory Dashboard</title>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+  <div class="container">
+    <h1>Inventory Dashboard</h1>
+
+    <div class="cards">
+      <div class="card">
+        <h4>Total inventory value</h4>
+        <div class="metric">₹{{ total_value }}</div>
+      </div>
+
+      <div class="card low-card">
+        <h4>Low stock (≤ {{ low_threshold }})</h4>
+        <ul>
+          {% for it in low_stock_items %}
+            <li class="low-item">{{ it.name }} — {{ it.quantity }}</li>
+          {% empty %}
+            <li>All items above threshold</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Category</th>
+          <th>Brand</th>
+          <th>Expiry</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for it in items %}
+          <tr class="{% if it.id in low_ids %}low-row{% endif %}">
+            <td>{{ it.name }}</td>
+            <td>{{ it.quantity }}</td>
+            <td>{{ it.price }}</td>
+            <td>{{ it.category|default:"—" }}</td>
+            <td>{{ it.brand|default:"—" }}</td>
+            <td>{% if it.expiry_date %}{{ it.expiry_date|date:"Y-m-d" }}{% else %}—{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
