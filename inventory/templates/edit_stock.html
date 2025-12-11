@@ -34,9 +34,9 @@
                 <button type="reset" class="btn ghost-blue" >Reset</button>
             {% endif %}
             {% if delbtn %}
-                <a href="{% url 'delete-stock' object.pk %}" class="btn ghost-red"> Delete Stock </a>
+                <a href="{% url 'inventory:delete-stock' object.pk %}" class="btn ghost-red"> Delete Stock </a>
             {% endif %}
-            <a href="{% url 'inventory' %}" class="btn ghost-button">Cancel</a>
+            <a href="{% url 'inventory:inventory' %}" class="btn ghost-button">Cancel</a>
         </div>
         
     </form>

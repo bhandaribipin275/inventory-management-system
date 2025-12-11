@@ -1,0 +1,47 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Change stock - {{ item.name }}</title>
+  <link rel="stylesheet" href="{% static 'inventory/styles.css' %}">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Record stock change</h1>
+      <p class="subtitle">{{ item.name }} — current quantity: {{ item.quantity }}</p>
+    </header>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" class="stock-form">
+      {% csrf_token %}
+      <label>
+        Type
+        <select name="type">
+          <option value="IN">Stock In</option>
+          <option value="OUT">Stock Out</option>
+        </select>
+      </label>
+
+      <label>
+        Quantity
+        <input type="number" name="change" min="1" required>
+      </label>
+
+      <label>
+        Note (optional)
+        <input type="text" name="note" maxlength="255">
+      </label>
+
+      <div class="form-actions">
+        <button class="btn" type="submit">Save</button>
+        <a class="btn secondary" href="{% url 'inventory:inventory_list' %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

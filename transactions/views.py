@@ -27,7 +27,7 @@ from .forms import (
     SaleItemFormset,
     SaleDetailsForm
 )
-from inventory.models import Stock
+from inventory.models import Stock, StockHistory
 
 # shows a lists of all suppliers
 class SupplierListView(ListView):
@@ -152,6 +152,7 @@ class PurchaseCreateView(View):
                 print('Exception error! ',exc)
                 context = {
                     'formset'   : formset,
+                    'supplier'  : supplierobj
                     'supplier'  : supplierobj,
                 }
                 return render(request, self.template_name, context)
@@ -166,8 +167,8 @@ class PurchaseCreateView(View):
                 # Removing purchase transaction to keep transaction data clean
                 billobj.delete()
                 context = {
-                    'form'      : form,
                     'formset'   : formset,
+                    'supplier'  : supplierobj
                 }
                 return render(request, self.template_name, context)
 
@@ -185,6 +186,14 @@ class PurchaseCreateView(View):
                 # saves bill item and stock
                 stock.save()
                 billitem.save()
+                
+                # Log stock movement to StockHistory
+                StockHistory.objects.create(
+                    stock=stock,
+                    change=billitem.quantity,
+                    type=StockHistory.IN,
+                    note=f"Purchase from {supplierobj.name} - Bill #{billobj.billno}"
+                )
 
             billdetailsobj.save()
             messages.success(request, "Purchased items have been registered successfully")
@@ -210,6 +219,14 @@ class PurchaseDeleteView(SuccessMessageMixin, DeleteView):
             if stock.is_deleted == False:
                 stock.quantity -= item.quantity
                 stock.save()
+                
+                # Log stock reversal to StockHistory
+                StockHistory.objects.create(
+                    stock=stock,
+                    change=item.quantity,
+                    type=StockHistory.OUT,
+                    note=f"Purchase bill #{self.object.billno} cancelled/deleted"
+                )
         messages.success(self.request, "Purchase bill has been deleted successfully")
         return super(PurchaseDeleteView, self).delete(*args, **kwargs)
 
@@ -283,6 +300,14 @@ class SaleCreateView(View):
                 stock.save()
                 billitem.save()
 
+                # Log stock movement to StockHistory
+                StockHistory.objects.create(
+                    stock=stock,
+                    change=billitem.quantity,
+                    type=StockHistory.OUT,
+                    note=f"Sale to customer - Bill #{billobj.billno}"
+                )
+
             billdetailsobj.save()
             messages.success(request, "Sold items have been registered successfully")
             return redirect('sale-bill', billno=billobj.billno)
@@ -299,7 +324,7 @@ class SaleDeleteView(SuccessMessageMixin, DeleteView):
     model = SaleBill
     template_name = "sales/delete_sale.html"
     success_url = '/transactions/sales'
-    
+
     def delete(self, *args, **kwargs):
         self.object = self.get_object()
         items = SaleItem.objects.filter(billno=self.object.billno)
@@ -308,6 +333,15 @@ class SaleDeleteView(SuccessMessageMixin, DeleteView):
             if stock.is_deleted == False:
                 stock.quantity += item.quantity
                 stock.save()
+
+                # Log stock reversal to StockHistory
+                StockHistory.objects.create(
+                    stock=stock,
+                    change=item.quantity,
+                    type=StockHistory.IN,
+                    note=f"Sale bill #{self.object.billno} cancelled/deleted"
+                )
+
         messages.success(self.request, "Sale bill has been deleted successfully")
         return super(SaleDeleteView, self).delete(*args, **kwargs)
 
