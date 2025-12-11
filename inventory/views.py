@@ -41,26 +41,6 @@ class StockListView(ListView):
             queryset = queryset.filter(Q(name__icontains=query))
         return queryset
 
-class StockCreateView(SuccessMessageMixin, CreateView):                                 # createview class to add new stock, mixin used to display message
-    model = Stock                                                                       # setting 'Stock' model as model
-    form_class = StockForm                                                              # setting 'StockForm' form as form
-    template_name = "edit_stock.html"                                                   # 'edit_stock.html' used as the template
-    success_url = '/inventory/list'                                                     # redirects to 'inventory' page in the url after submitting the form
-    success_message = "Stock has been created successfully"                             # displays message when form is submitted
-
-    def get_context_data(self, **kwargs):                                               # used to send additional context
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["q"] = self.request.GET.get("q", "")
-        return context
-
-
-class StockUpdateView(SuccessMessageMixin, UpdateView):                                 # updateview class to edit stock, mixin used to display message
-    model = Stock                                                                       # setting 'Stock' model as model
-    form_class = StockForm                                                              # setting 'StockForm' form as form
-    template_name = "edit_stock.html"                                                   # 'edit_stock.html' used as the template
-    success_url = '/inventory/list'                                                     # redirects to 'inventory' page in the url after submitting the form
-    success_message = "Stock has been updated successfully"                             # displays message when form is submitted
 # ============================
 #   CREATE STOCK
 # ============================
@@ -68,8 +48,13 @@ class StockCreateView(SuccessMessageMixin, CreateView):
     model = Stock
     form_class = StockForm
     template_name = "inventory/add_stock.html"
-    success_url = reverse_lazy("inventory")
+    success_url = reverse_lazy("inventory:inventory")
     success_message = "Stock has been created successfully."
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["q"] = self.request.GET.get("q", "")
+        return context
 
 
 # ============================
@@ -79,7 +64,7 @@ class StockUpdateView(SuccessMessageMixin, UpdateView):
     model = Stock
     form_class = StockForm
     template_name = "inventory/edit_stock.html"
-    success_url = reverse_lazy("inventory")
+    success_url = reverse_lazy("inventory:inventory")
     success_message = "Stock has been updated successfully."
 
     def get_object(self, queryset=None):
@@ -92,7 +77,7 @@ class StockUpdateView(SuccessMessageMixin, UpdateView):
 class StockDeleteView(DeleteView):
     model = Stock
     template_name = "inventory/delete_stock.html"
-    success_url = reverse_lazy("inventory")
+    success_url = reverse_lazy("inventory:inventory")
 
     def get_object(self, queryset=None):
         return get_object_or_404(Stock, pk=self.kwargs["pk"], is_deleted=False)
@@ -100,9 +85,9 @@ class StockDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         stock = self.get_object()
         stock.is_deleted = True
-        stock.save()                                               
-        messages.success(request, self.success_message)
-        return redirect('inventory')
+        stock.save()
+        messages.success(request, "Stock deleted successfully.")
+        return redirect('inventory:inventory')
 
 
 def inventory_list(request):
@@ -163,9 +148,6 @@ def stock_change(request, pk):
 
     # GET
     return render(request, 'inventory/stock_change.html', {'item': stock})
-        stock.save()
-        messages.success(request, "Stock deleted successfully.")
-        return super().delete(request, *args, **kwargs)
 
 
 # ============================

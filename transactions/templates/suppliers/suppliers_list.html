@@ -16,7 +16,7 @@
                 <div style="display:inline-block; margin-right:8px;">
                     <input id="supplier-search" type="search" class="form-control" placeholder="Search suppliers (name / phone / GSTIN)" aria-label="Search suppliers" style="width:320px;">
                 </div>
-                <a class="btn ghost-blue" href="{% url 'new-supplier' %}">Add New Supplier</a>
+                <a class="btn ghost-blue" href="{% url 'transactions:new-supplier' %}">Add New Supplier</a>
             </div>
         </div>
     </div>
@@ -40,14 +40,14 @@
             {% for supplier in object_list %}
             <tr class="supplier-row">
                 <td>
-                    <h3> <a href="{% url 'supplier' supplier.name %}">{{ supplier.name }}</a> </h3>
+                    <h3> <a href="{% url 'transactions:supplier' supplier.name %}">{{ supplier.name }}</a> </h3>
                 </td>
                 <td class="align-middle"> {{ supplier.phone }} </td>
                 <td class="align-middle"> {{ supplier.gstin }} </td>
                 <td class="align-middle">
                     <div class="align-middle">
-                        <a href="{% url 'edit-supplier' supplier.pk %}" class="btn ghost-button">Edit Details</a>
-                        <a href="{% url 'delete-supplier' supplier.pk %}" class="btn ghost-red">Delete Supplier</a>
+                        <a href="{% url 'transactions:edit-supplier' supplier.pk %}" class="btn ghost-button">Edit Details</a>
+                        <a href="{% url 'transactions:delete-supplier' supplier.pk %}" class="btn ghost-red">Delete Supplier</a>
                     </div>
                 </td>              
             </tr>

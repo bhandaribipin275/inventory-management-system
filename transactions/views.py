@@ -153,7 +153,6 @@ class PurchaseCreateView(View):
                 context = {
                     'formset'   : formset,
                     'supplier'  : supplierobj
-                    'supplier'  : supplierobj,
                 }
                 return render(request, self.template_name, context)
             

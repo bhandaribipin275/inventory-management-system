@@ -3,6 +3,8 @@ from django.conf.urls import url
 from django.views.generic import RedirectView
 from . import views
 
+app_name = 'transactions'
+
 urlpatterns = [
     # Redirect /transactions/ to /transactions/purchases/
     path('', RedirectView.as_view(url='purchases/', permanent=True)),

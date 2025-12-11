@@ -12,7 +12,7 @@
         <div class="media">
             <div class="media-body">
                 <h2 style="color:#ea2088;" class="account-heading">&nbsp;{{ supplier.name }}</h2>
-                <a href="{% url 'edit-supplier' supplier.pk %}" class="btn ghost-button" style="float: right;">Edit Details</a>
+                <a href="{% url 'transactions:edit-supplier' supplier.pk %}" class="btn ghost-button" style="float: right;">Edit Details</a>
                 <div class="row">
                     <div class="col-md-6">
                         <p class="fal">
@@ -54,7 +54,7 @@
                 <td class="align-middle">{% for item in purchase.get_items_list %} {{ item.quantity }} <br> {% endfor %}</td>     
                 <td class="align-middle">{{ purchase.get_total_price }}</td>
                 <td class="align-middle">{{ purchase.time.date }}</td>
-                <td class="align-middle"> <a href="{% url 'purchase-bill' purchase.billno %}" class="btn ghost-pink">View Bill</a> <a href="{% url 'delete-purchase' purchase.pk %}" class="btn ghost-red">Delete Bill</a> </td>
+                <td class="align-middle"> <a href="{% url 'transactions:purchase-bill' purchase.billno %}" class="btn ghost-pink">View Bill</a> <a href="{% url 'transactions:delete-purchase' purchase.pk %}" class="btn ghost-red">Delete Bill</a> </td>
             </tr>
             {% endfor %}
         </tbody>
