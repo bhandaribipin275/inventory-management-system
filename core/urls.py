@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from inventory import views as inventory_views
 
 from django.conf.urls.static import static                      # used for static files
 
@@ -27,4 +28,5 @@ urlpatterns = [
     path('', include('homepage.urls')),
     path('inventory/', include('inventory.urls', namespace='inventory')),
     path('transactions/', include('transactions.urls')),
+    path('dashboard/', inventory_views.dashboard, name='dashboard'),
 ]

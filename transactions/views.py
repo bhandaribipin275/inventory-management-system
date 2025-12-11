@@ -144,6 +144,7 @@ class PurchaseCreateView(View):
         if formset.is_valid():
             # saves bill
             try:
+                # create and save a PurchaseBill linked to the selected supplier
                 billobj = PurchaseBill(supplier=supplierobj)
                 billobj.save()
 
@@ -152,6 +153,7 @@ class PurchaseCreateView(View):
                 context = {
                     'formset'   : formset,
                     'supplier'  : supplierobj
+                    'supplier'  : supplierobj,
                 }
                 return render(request, self.template_name, context)
             
