@@ -79,7 +79,7 @@ class SupplierDeleteView(View):
         supplier.is_deleted = True
         supplier.save()                                               
         messages.success(request, self.success_message)
-        return redirect('suppliers-list')
+        return redirect('transactions:suppliers-list')
 
 # used to view a supplier's profile
 class SupplierView(View):
@@ -122,7 +122,7 @@ class SelectSupplierView(View):
         if form.is_valid():
             supplierid = request.POST.get("supplier")
             supplier = get_object_or_404(Supplier, id=supplierid)
-            return redirect('new-purchase', supplier.pk)
+            return redirect('transactions:new-purchase', supplier.pk)
         return render(request, self.template_name, {'form': form})
 
 # used to generate a bill object and save items
@@ -196,7 +196,7 @@ class PurchaseCreateView(View):
 
             billdetailsobj.save()
             messages.success(request, "Purchased items have been registered successfully")
-            return redirect('purchase-bill', billno=billobj.billno)
+            return redirect('transactions:purchase-bill', billno=billobj.billno)
         formset = PurchaseItemFormset(request.GET or None)
         context = {
             'formset'   : formset,
@@ -309,7 +309,7 @@ class SaleCreateView(View):
 
             billdetailsobj.save()
             messages.success(request, "Sold items have been registered successfully")
-            return redirect('sale-bill', billno=billobj.billno)
+            return redirect('transactions:sale-bill', billno=billobj.billno)
         form = SaleForm(request.GET or None)
         formset = SaleItemFormset(request.GET or None)
         context = {

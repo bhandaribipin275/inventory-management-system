@@ -13,15 +13,21 @@
 
     <div class="cards">
       <div class="card">
-        <h4>Total inventory value</h4>
-        <div class="metric">₹{{ total_value }}</div>
+        <h4>Total Items</h4>
+        <div class="metric">{{ total_items }}</div>
+      </div>
+
+      <div class="card">
+        <h4>Total Quantity</h4>
+        <div class="metric">{{ total_quantity }}</div>
       </div>
 
       <div class="card low-card">
         <h4>Low stock (≤ {{ low_threshold }})</h4>
+        <div class="metric">{{ low_stock_count }} items</div>
         <ul>
-          {% for it in low_stock_items %}
-            <li class="low-item">{{ it.name }} — {{ it.quantity }}</li>
+          {% for stock in low_stock_items %}
+            <li class="low-item">{{ stock.name }} — {{ stock.quantity }}</li>
           {% empty %}
             <li>All items above threshold</li>
           {% endfor %}
@@ -33,22 +39,22 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Qty</th>
-          <th>Price</th>
-          <th>Category</th>
-          <th>Brand</th>
-          <th>Expiry</th>
+          <th>Quantity</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
-        {% for it in items %}
-          <tr class="{% if it.id in low_ids %}low-row{% endif %}">
-            <td>{{ it.name }}</td>
-            <td>{{ it.quantity }}</td>
-            <td>{{ it.price }}</td>
-            <td>{{ it.category|default:"—" }}</td>
-            <td>{{ it.brand|default:"—" }}</td>
-            <td>{% if it.expiry_date %}{{ it.expiry_date|date:"Y-m-d" }}{% else %}—{% endif %}</td>
+        {% for stock in stocks %}
+          <tr class="{% if stock.id in low_ids %}low-row{% endif %}">
+            <td>{{ stock.name }}</td>
+            <td>{{ stock.quantity }}</td>
+            <td>
+              {% if stock.quantity <= low_threshold %}
+                <span style="color: red;">Low Stock</span>
+              {% else %}
+                <span style="color: green;">In Stock</span>
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>

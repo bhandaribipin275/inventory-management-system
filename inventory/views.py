@@ -157,22 +157,26 @@ def dashboard(request):
     """
     Dashboard view:
     - highlights low stock items (threshold configurable)
-    - computes total inventory value (Decimal-safe)
+    - shows total items and low stock count
     - passes low_ids set for template conditional checks
     """
     low_threshold = 5  # change this value to adjust what counts as low stock
-    items = Item.objects.all().order_by('name')
+    stocks = Stock.objects.filter(is_deleted=False).order_by('name')
     # compute low stock items and a set of their ids for fast template checks
-    low_stock_items = [i for i in items if i.is_low_stock(low_threshold)]
-    low_ids = {i.id for i in low_stock_items}
-    # sum total value using Decimal start to avoid mixing types
-    total_value = sum((i.total_value() for i in items), Decimal('0.00'))
+    low_stock_items = [stock for stock in stocks if stock.quantity <= low_threshold]
+    low_ids = {stock.id for stock in low_stock_items}
+
+    total_items = stocks.count()
+    total_quantity = sum(stock.quantity for stock in stocks)
+    low_stock_count = len(low_stock_items)
 
     context = {
-        'items': items,
+        'stocks': stocks,
         'low_stock_items': low_stock_items,
         'low_threshold': low_threshold,
         'low_ids': low_ids,
-        'total_value': total_value,
+        'total_items': total_items,
+        'total_quantity': total_quantity,
+        'low_stock_count': low_stock_count,
     }
     return render(request, 'dashboard.html', context)
