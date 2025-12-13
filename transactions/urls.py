@@ -1,8 +1,14 @@
 from django.urls import path
 from django.conf.urls import url
+from django.views.generic import RedirectView
 from . import views
 
+app_name = 'transactions'
+
 urlpatterns = [
+    # Redirect /transactions/ to /transactions/purchases/
+    path('', RedirectView.as_view(url='purchases/', permanent=True)),
+    
     path('suppliers/', views.SupplierListView.as_view(), name='suppliers-list'),
     path('suppliers/new', views.SupplierCreateView.as_view(), name='new-supplier'),
     path('suppliers/<pk>/edit', views.SupplierUpdateView.as_view(), name='edit-supplier'),

@@ -11,7 +11,7 @@
     <div class="row" style="color: #ea2088; font-style: bold; font-size: 3rem;">
         <div class="col-md-8">Sales List</div>
         <div class="col-md-4">               
-            <div style="float:right;"> <a class="btn ghost-blue" href="{% url 'new-sale' %}">New Outgoing Stock</a> </div>
+            <div style="float:right;"> <a class="btn ghost-blue" href="{% url 'transactions:new-sale' %}">New Outgoing Stock</a> </div>
         </div>
     </div>
     
@@ -42,7 +42,7 @@
                 <td class="align-middle">{% for item in sale.get_items_list %} {{ item.quantity }} <br> {% endfor %}</td>     
                 <td class="align-middle">{{ sale.get_total_price }}</td>
                 <td class="align-middle">{{ sale.time.date }}</td>
-                <td class="align-middle"> <a href="{% url 'sale-bill' sale.billno %}" class="btn ghost-pink">View Bill</a> <a href="{% url 'delete-sale' sale.pk %}" class="btn ghost-red">Delete Bill</a> </td>
+                <td class="align-middle"> <a href="{% url 'transactions:sale-bill' sale.billno %}" class="btn ghost-pink">View Bill</a> <a href="{% url 'transactions:delete-sale' sale.pk %}" class="btn ghost-red">Delete Bill</a> </td>
             </tr>
             {% endfor %}
         </tbody>

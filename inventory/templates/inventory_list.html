@@ -1,0 +1,54 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Inventory - Stock History</title>
+  <link rel="stylesheet" href="{% static 'inventory/styles.css' %}">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Inventory</h1>
+      <p class="subtitle">View items and recent stock in/out history</p>
+    </header>
+
+    <section class="items-section">
+      <h2>Items</h2>
+      <table class="items-table">
+        <thead>
+          <tr><th>Name</th><th>Quantity</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td><a class="btn" href="{% url 'inventory:stock_change' item.pk %}">Record stock in/out</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3">No items found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="history-section">
+      <h2>Recent Stock History</h2>
+      <ul class="history-list">
+        {% for h in history %}
+        <li class="history-item">
+          <span class="ts">{{ h.timestamp|date:"Y-m-d H:i" }}</span>
+          <strong>{{ h.item.name }}</strong>
+          <span class="type {{ h.type|lower }}">{{ h.get_type_display }}</span>
+          <span class="change">{{ h.change }}</span>
+          {% if h.note %}<span class="note">— {{ h.note }}</span>{% endif %}
+        </li>
+        {% empty %}
+        <li>No stock history yet.</li>
+        {% endfor %}
+      </ul>
+    </section>
+  </div>
+</body>
+</html>
