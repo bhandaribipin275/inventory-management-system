@@ -271,5 +271,14 @@ MIT License - Free for personal and commercial use
 5. Check Python version is 3.8 or higher
 
 ---
+## Setup & Run Instructions
+
+1. Ensure Python 3.8 or higher is installed
+2. Create and activate a virtual environment
+3. Install dependencies using `pip install -r requirements.txt`
+4. Run database migrations using `python manage.py migrate`
+5. Start the server using `python manage.py runserver`
+6. Open http://127.0.0.1:8000/ in your browser
+Add setup and run instructions
 
 **That's it! Happy inventory managing! 📦**
